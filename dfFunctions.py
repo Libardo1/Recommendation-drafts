@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def read_process(filname, sep="\t"):
+def get_data(filname, sep="\t"):
     col_names = ["user", "item", "rate", "st"]
     df = pd.read_csv(filname, sep=sep, header=None, names=col_names, engine='python')
     df["user"] -= 1
@@ -12,9 +12,6 @@ def read_process(filname, sep="\t"):
     df["rate"] = df["rate"].astype(np.float32)
     return df
 
-def get_data_raw():
-    df = read_process("/home/felipe/Desktop/Recommender/movielens/ml-1m/ratings.dat", sep="::")
-    return df
 
 
 class BatchGenerator(object):
