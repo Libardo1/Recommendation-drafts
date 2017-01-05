@@ -13,7 +13,7 @@ def read_process(filname, sep="\t"):
     return df
 
 def get_data_raw():
-    df = read_process("/home/felipe/Desktop/Recommender/TF-recomm/movielens/ml-1m/ratings.dat", sep="::")
+    df = read_process("/home/felipe/Desktop/Recommender/movielens/ml-1m/ratings.dat", sep="::")
     return df
 
 
