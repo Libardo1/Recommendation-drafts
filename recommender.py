@@ -202,7 +202,7 @@ class SVDmodel_log(SVDmodel):
         print(" (DAYS:HOURS:MIN:SEC)")
         print(' ')
         print('To access more information about this training just type')
-        print('!tensorboard --logdir=' + self.log_path)
+        print('tensorboard --logdir=' + self.log_path)
         
 
 
