@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -18,11 +17,11 @@ class SVDmodel(object):
         self.items = items
         self.ratings = ratings
         self.general_duration = 0 
-        self.valid_dataset = None
         self.num_steps = 0
         #assuming that the dataframe has n items started with 0
         self.num_of_users = max(self.dataframe[self.users]) + 1
         self.num_of_items = max(self.dataframe[self.items]) + 1
+        self.train,self.test,self.valid = self.data_separation()
         
     def data_separation(self):
         rows = len(self.dataframe)
@@ -56,7 +55,7 @@ class SVDmodel(object):
             with tf.name_scope('loss'):
                 tf_cost = tf_models.loss_function(infer, regularizer,tf_rate_batch,reg=hp_reg)
 
-            #Optimizer.
+            #Optimizer
             with tf.name_scope('training'):
                 global_step = tf.contrib.framework.assert_or_get_global_step()
                 assert global_step is not None
@@ -67,11 +66,9 @@ class SVDmodel(object):
                 acc_op =  tf.sqrt(tf.reduce_mean(tf.pow(tf.sub(infer,tf_rate_batch),2)))
 
      
-        train, test, valid = self.data_separation()
-        self.valid_dataset = valid
         self.num_steps = num_steps
-        train_batches = dfFunctions.BatchGenerator(train,batch_size,self.users,self.items,self.ratings)
-        test_batches = dfFunctions.BatchGenerator(test,batch_size,self.users,self.items,self.ratings)
+        train_batches = dfFunctions.BatchGenerator(self.train,batch_size,self.users,self.items,self.ratings)
+        test_batches = dfFunctions.BatchGenerator(self.test,batch_size,self.users,self.items,self.ratings)
 
 
         with tf.Session(graph=graph) as sess:
@@ -154,12 +151,10 @@ class SVDmodel_log(SVDmodel):
                 acc_op =  tf.sqrt(tf.reduce_mean(tf.pow(tf.sub(infer,tf_rate_batch),2)))
                 tf.scalar_summary(acc_op.op.name,acc_op) #write acc to log
      
-        train, test, valid = self.data_separation()
-        self.valid_dataset = valid
         self.num_steps = num_steps
         self.log_path = self.get_log_path()
-        train_batches = dfFunctions.BatchGenerator(train,batch_size,self.users,self.items,self.ratings)
-        test_batches = dfFunctions.BatchGenerator(test,batch_size,self.users,self.items,self.ratings)
+        train_batches = dfFunctions.BatchGenerator(self.train,batch_size,self.users,self.items,self.ratings)
+        test_batches = dfFunctions.BatchGenerator(self.test,batch_size,self.users,self.items,self.ratings)
 
 
         with tf.Session(graph=graph) as sess:
@@ -206,11 +201,10 @@ class SVDmodel_log(SVDmodel):
         
 
 
-
 if __name__ == '__main__':
     path = "/home/felipe/Desktop/Recommender/movielens/ml-1m/ratings.dat"
     df = dfFunctions.get_data(path, sep="::")
-    model = SVDmodel_log(df,'user', 'item','rate')
+    model = SVDmodel(df,'user', 'item','rate')
 
     dimension = 15
     regularizer_constant = 0.05
