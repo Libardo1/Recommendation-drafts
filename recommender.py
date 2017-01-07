@@ -18,10 +18,14 @@ class SVDmodel(object):
         self.ratings = ratings
         self.general_duration = 0 
         self.num_steps = 0
+        self.dimension = None
+        self.regularizer = None
         #assuming that the dataframe has n items started with 0
         self.num_of_users = max(self.dataframe[self.users]) + 1
         self.num_of_items = max(self.dataframe[self.items]) + 1
+        self.best_acc_test = float('inf')
         self.train,self.test,self.valid = self.data_separation()
+
         
     def data_separation(self):
         rows = len(self.dataframe)
@@ -36,8 +40,10 @@ class SVDmodel(object):
     def accuracy(self,predictions, ratings):
         return np.sqrt(np.mean(np.power(predictions - ratings, 2)))
 
-    def tf_training(self,hp_dim,hp_reg,learning_rate,batch_size,num_steps):
+    def training(self,hp_dim,hp_reg,learning_rate,batch_size,num_steps):
         #creating tf graph
+        self.dimension = hp_dim
+        self.regularizer = hp_reg
         graph = tf.Graph() 
         with graph.as_default():
 
@@ -61,6 +67,13 @@ class SVDmodel(object):
                 assert global_step is not None
                 train_op = tf.train.AdamOptimizer(learning_rate).minimize(tf_cost, global_step=global_step)
 
+            #Saver
+            saver = tf.train.Saver()
+            save_dir = 'checkpoints/'
+            if not os.path.exists(save_dir):
+                os.makedirs(save_dir)
+            save_path = os.path.join(save_dir, 'best_validation')
+
             #Minibatch accuracy
             with tf.name_scope('accuracy'):
                 acc_op =  tf.sqrt(tf.reduce_mean(tf.pow(tf.sub(infer,tf_rate_batch),2)))
@@ -69,6 +82,7 @@ class SVDmodel(object):
         self.num_steps = num_steps
         train_batches = dfFunctions.BatchGenerator(self.train,batch_size,self.users,self.items,self.ratings)
         test_batches = dfFunctions.BatchGenerator(self.test,batch_size,self.users,self.items,self.ratings)
+        marker = ''
 
 
         with tf.Session(graph=graph) as sess:
@@ -85,9 +99,15 @@ class SVDmodel(object):
                     feed_dict = {tf_user_batch: users, tf_item_batch: items, tf_rate_batch: rates}              
                     pred_batch = sess.run(infer, feed_dict=feed_dict)
                     test_error = self.accuracy(pred_batch,rates)
+                    if test_error < self.best_acc_test:
+                        self.best_acc_test = test_error
+                        marker = "*"
+                        saver.save(sess=sess, save_path=save_path)
+
                     end = time.time()
-                    print("{:3d} {:f} {:f} {:f} {:f}(s)".format(step, train_error, test_error,cost,
+                    print("{:3d} {:f} {:f}{:s} {:f} {:f}(s)".format(step, train_error, test_error,marker,cost,
                                                            end - start))
+                    marker = ''
                     start = end
 
         #duration of the whole process  
@@ -103,8 +123,45 @@ class SVDmodel(object):
         print(" (DAYS:HOURS:MIN:SEC)")
 
 
-class SVDmodel_log(SVDmodel):
+    def prediction(self,list_of_users=None,list_of_items=None,show_valid=False):
+        if self.dimension == None and self.regularizer == None:
+            print("You can not have a prediction without training!!!!")
+        else:
+            valid_batches = dfFunctions.BatchGenerator(self.valid,len(self.valid),self.users,self.items,self.ratings)
+            graph = tf.Graph() 
+            with graph.as_default():
 
+                #Placeholders
+                tf_user_batch = tf.placeholder(tf.int32, shape=[None], name="id_user")
+                tf_item_batch = tf.placeholder(tf.int32, shape=[None], name="id_item")
+                tf_rate_batch = tf.placeholder(tf.float32, shape=[None],name="actual_ratings")
+
+                #Applying the model
+                tf_svd_model = tf_models.inference_svd(tf_user_batch, tf_item_batch, user_num=self.num_of_users, item_num=self.num_of_items, dim=self.dimension)
+                infer, regularizer = tf_svd_model['infer'], tf_svd_model['regularizer'] 
+
+                #accuracy
+                with tf.name_scope('accuracy'):
+                    acc_op =  tf.sqrt(tf.reduce_mean(tf.pow(tf.sub(infer,tf_rate_batch),2)))
+                #Saver
+                saver = tf.train.Saver()
+                save_dir = 'checkpoints/'
+                save_path = os.path.join(save_dir, 'best_validation')
+
+            with tf.Session(graph=graph) as sess:
+                saver.restore(sess=sess, save_path=save_path)
+                users, items, rates = valid_batches.get_batch()
+                if show_valid:
+                    feed_dict = {tf_user_batch: users, tf_item_batch: items, tf_rate_batch: rates}
+                    valid_error = sess.run(acc_op, feed_dict=feed_dict)
+                    print("Avarege error of the whole valid dataset: ", valid_error)         
+                else:
+                    feed_dict = {tf_user_batch: list_of_users, tf_item_batch: list_of_items, tf_rate_batch: rates}
+                    prediction = sess.run(infer, feed_dict=feed_dict)
+                    return prediction
+                
+
+class SVDmodel_log(SVDmodel):
 
     def __init__(self,dataframe,users, items, ratings):
         super().__init__(dataframe,users,items,ratings)
@@ -116,8 +173,10 @@ class SVDmodel_log(SVDmodel):
         log_path = os.path.join(log_basedir,run_label)
         return log_path
 
-    def tf_training(self,hp_dim,hp_reg,learning_rate,batch_size,num_steps):
+    def training(self,hp_dim,hp_reg,learning_rate,batch_size,num_steps):
         #creating tf graph
+        self.dimension = hp_dim
+        self.regularizer = hp_reg
         graph = tf.Graph() 
         with graph.as_default():
 
@@ -145,6 +204,13 @@ class SVDmodel_log(SVDmodel):
                 global_step = tf.contrib.framework.assert_or_get_global_step()
                 assert global_step is not None
                 train_op = tf.train.AdamOptimizer(learning_rate).minimize(tf_cost, global_step=global_step)
+
+            #Saver
+            saver = tf.train.Saver()
+            save_dir = 'checkpoints/'
+            if not os.path.exists(save_dir):
+                os.makedirs(save_dir)
+            save_path = os.path.join(save_dir, 'best_validation')
 
             #Minibatch accuracy
             with tf.name_scope('accuracy'):
@@ -179,9 +245,15 @@ class SVDmodel_log(SVDmodel):
                     feed_dict = {tf_user_batch: users, tf_item_batch: items, tf_rate_batch: rates}             
                     pred_batch = sess.run(infer, feed_dict=feed_dict)
                     test_error = self.accuracy(pred_batch,rates)
+                    if test_error < self.best_acc_test:
+                        self.best_acc_test = test_error
+                        marker = "*"
+                        saver.save(sess=sess, save_path=save_path)
+
                     end = time.time()
-                    print("{:3d} {:f} {:f} {:f} {:f}(s)".format(step, train_error, test_error,cost,
+                    print("{:3d} {:f} {:f}{:s} {:f} {:f}(s)".format(step, train_error, test_error,marker,cost,
                                                            end - start))
+                    marker = ''
                     start = end
 
         #duration of the whole process  
@@ -212,8 +284,9 @@ if __name__ == '__main__':
     batch_size = 1000
     num_steps = 90000
 
-    model.tf_training(dimension,regularizer_constant,learning_rate,batch_size,num_steps)
+    model.training(dimension,regularizer_constant,learning_rate,batch_size,num_steps)
     model.print_stats()
+    model.prediction(show_valid=True)
 
 
         
