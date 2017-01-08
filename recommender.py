@@ -287,6 +287,7 @@ if __name__ == '__main__':
     model.training(dimension,regularizer_constant,learning_rate,batch_size,num_steps)
     model.print_stats()
     model.prediction(show_valid=True)
+    model.prediction(np.array([0,0,0]),np.array([1192,660,913]))
 
 
         
