@@ -100,7 +100,7 @@ class SVD(object):
 
         with tf.Session(graph=self.graph) as sess:
             tf.initialize_all_variables().run()
-            print("{} {} {} {} {}".format("step", "batch_error", "test_error", "cost" ,"elapsed_time"))
+            print("{} {} {} {}".format("step", "batch_error", "test_error","elapsed_time"))
             start = time.time()
             initial_time = start
             for step in range(num_steps):
@@ -118,7 +118,7 @@ class SVD(object):
                         self.saver.save(sess=sess, save_path=self.save_path)
 
                     end = time.time()
-                    print("{:3d} {:f} {:f}{:s} {:f} {:f}(s)".format(step, train_error, test_error,marker,cost,
+                    print("{:3d} {:f} {:f}{:s} {:f}(s)".format(step, train_error, test_error,marker,
                                                            end - start))
                     marker = ''
                     start = end 
@@ -144,7 +144,8 @@ class SVD(object):
                 if show_valid:
                     feed_dict = {self.tf_user_batch: users, self.tf_item_batch: items, self.tf_rate_batch: rates}
                     valid_error = sess.run(self.acc_op, feed_dict=feed_dict)
-                    print("Avarege error of the whole valid dataset: ", valid_error)         
+                    #print("Avarege error of the whole valid dataset: ", valid_error)
+                    return valid_error         
                 else:
                     feed_dict = {self.tf_user_batch: list_of_users, self.tf_item_batch: list_of_items, self.tf_rate_batch: rates}
                     prediction = sess.run(self.infer, feed_dict=feed_dict)
