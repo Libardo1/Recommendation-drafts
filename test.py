@@ -1,9 +1,4 @@
 import unittest
-#import numpy as np
-#import pandas as pd
-#import tensorflow as tf
-
-
 import dfFunctions
 import tf_models
 import recommender as re

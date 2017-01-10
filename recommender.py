@@ -1,8 +1,3 @@
-import numpy as np
-import pandas as pd
-import tensorflow as tf
-
-
 import dfFunctions
 import tf_models
 
@@ -89,8 +84,8 @@ if __name__ == '__main__':
     num_steps = args.steps
 
     model.training(dimension,regularizer_constant,learning_rate,batch_size,num_steps)
-    model.valid_prediction()
-    print(model.prediction(np.array([0,0,0]),np.array([1192,660,913])))
+    prediction = model.valid_prediction()
+    print("The mean square error the whole valid dataset is ", prediction) 
 
 
         

@@ -7,6 +7,20 @@ from datetime import datetime,timedelta
 
 
 def inference_svd(user_batch, item_batch, user_num, item_num, dim=5):
+    """
+    This function creates one tensor of shape=[dim] for every user
+    and every item. We select the indices for users from the tensor user_batch
+    and select the indices for items from the tensor item_batch. After that we
+    calculate the infered score as the inner product between the user vector and
+    the item vector (we also sum the global bias, the bias from that user and 
+    the bias from that item). infer is the tensor with the result of this
+    caculation.
+
+    We calculate also a regularizer to use in the loss function. This function
+    returns a dictionary with the tensors infer, regularizer, w_user (tensor with
+    all the user vectors) and w_items (tensor with all the item vectors)   
+
+    """
     with tf.name_scope('Declaring_variables'):
         bias_global = tf.get_variable("bias_global", shape=[])
         w_bias_user = tf.get_variable("embd_bias_user", shape=[user_num])
