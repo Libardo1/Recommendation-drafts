@@ -1,7 +1,7 @@
 import numpy as np
 
 def accuracy(predictions, ratings):
-	"""
+    """
 	Return the mean square error between the 
 	predictions vector and the ratings vectors.
 
