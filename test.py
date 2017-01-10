@@ -1,7 +1,7 @@
 import unittest
-import numpy as np
-import pandas as pd
-import tensorflow as tf
+#import numpy as np
+#import pandas as pd
+#import tensorflow as tf
 
 
 import dfFunctions
@@ -10,7 +10,9 @@ import recommender as re
 
 class TestRecomendation(unittest.TestCase):
     """
-    asasasa
+    A very basic test to check if the otimization is working.
+    We run 5000 steps of training and check if the  mean square error
+    from the valid dataset is less than 1
     """
     def test_upperbound(self):
         path = "/var/tmp/Felsal_Projects/Recommender/movielens/ml-1m/ratings.dat"
@@ -25,7 +27,7 @@ class TestRecomendation(unittest.TestCase):
 
         model.training(dimension,regularizer_constant,learning_rate,batch_size,num_steps)
         prediction = model.valid_prediction()
-        self.assertTrue(prediction <=1.0001, \
+        self.assertTrue(prediction <=1.0, \
                             "\n with num_steps = {0} \n, the mean square error of the valid dataset should be less than 1 and not {1}"\
                             .format(num_steps,prediction))
 
@@ -33,9 +35,9 @@ class TestRecomendation(unittest.TestCase):
 
 def run_test():
     """ 
-    sssss
+    Running all the tests
     """
-    print("Running some tests...")
+    print("Running all tests...")
     suite = unittest.TestSuite()
     for method in dir(TestRecomendation):
        if method.startswith("test"):
