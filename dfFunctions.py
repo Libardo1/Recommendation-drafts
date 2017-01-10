@@ -13,7 +13,6 @@ def get_data(filname, sep="\t"):
     return df
 
 
-
 class BatchGenerator(object):
     
     def __init__(self,dataframe,batch_size,users,items,ratings):
