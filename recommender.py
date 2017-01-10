@@ -38,7 +38,7 @@ class SVDmodel(object):
         self.tf_counterpart.print_stats()
 
     def valid_prediction(self):
-        self.tf_counterpart.prediction(show_valid=True)
+        return self.tf_counterpart.prediction(show_valid=True)
        
     def prediction(self,list_of_users,list_of_items):
         return self.tf_counterpart.prediction(list_of_users,list_of_items)

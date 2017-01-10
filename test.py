@@ -24,7 +24,7 @@ class TestRecomendation(unittest.TestCase):
         num_steps = 5000
 
         model.training(dimension,regularizer_constant,learning_rate,batch_size,num_steps)
-        prediction = model.valid_prediction() 
+        prediction = model.valid_prediction()
         self.assertTrue(prediction <=1.0001, \
                             "\n with num_steps = {0} \n, the mean square error of the valid dataset should be less than 1 and not {1}"\
                             .format(num_steps,prediction))
@@ -39,7 +39,7 @@ def run_test():
     suite = unittest.TestSuite()
     for method in dir(TestRecomendation):
        if method.startswith("test"):
-          suite.addTest(TestSoftmax(method))
+          suite.addTest(TestRecomendation(method))
     unittest.TextTestRunner().run(suite)
 
 
