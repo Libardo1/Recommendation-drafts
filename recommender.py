@@ -1,9 +1,6 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import time
-import os
-from datetime import datetime, timedelta
 
 
 import dfFunctions
@@ -23,7 +20,7 @@ class SVDmodel(object):
         
     def data_separation(self):
         rows = len(self.dataframe)
-        df = self.dataframe.iloc[np.randomd.permutation(rows)].reset_index(drop=True)
+        df = self.dataframe.iloc[np.random.permutation(rows)].reset_index(drop=True)
         split_index = int(rows * 0.9)
         new_split = split_index + int((rows - split_index) *0.5)
         df_train = df[0:split_index]
@@ -56,7 +53,7 @@ if __name__ == '__main__':
     regularizer_constant = 0.05
     learning_rate = 0.001
     batch_size = 1000
-    num_steps = 4000
+    num_steps = 5000
 
     model.training(dimension,regularizer_constant,learning_rate,batch_size,num_steps)
     model.valid_prediction()

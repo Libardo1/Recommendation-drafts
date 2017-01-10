@@ -1,6 +1,9 @@
 import tensorflow as tf
 import numpy as np
 from utils import accuracy
+import os
+import time
+from datetime import datetime,timedelta
 
 
 def inference_svd(user_batch, item_batch, user_num, item_num, dim=5):
@@ -70,7 +73,7 @@ class SVD(object):
             global_step = tf.contrib.framework.get_or_create_global_step()
 
             with tf.name_scope('loss'):
-                self.tf_cost = tf_models.loss_function(self.infer, regularizer,self.tf_rate_batch,reg=hp_reg)
+                self.tf_cost = loss_function(self.infer, regularizer,self.tf_rate_batch,reg=hp_reg)
 
             #Optimizer
             with tf.name_scope('training'):
