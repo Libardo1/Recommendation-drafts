@@ -47,14 +47,14 @@ class BatchGenerator(object):
         self.size = len(df)
         
     def get_batch(self):
-    """
-    Every time we call this method, a new list of size batch_size
-    with random numbers is created (all numbers less than the size
-    of the dataframe). With this list we select some random users,
-    items and ratings.
+        """
+        Every time we call this method, a new list of size batch_size
+        with random numbers is created (all numbers less than the size
+        of the dataframe). With this list we select some random users,
+        items and ratings.
 
-    :rtype: triple of numpy arrays
-    """
+        :rtype: triple of numpy arrays
+        """
         random_indices = np.random.randint(0,self.size,self.batch_size)
         users = self.users[random_indices]
         items = self.items[random_indices]

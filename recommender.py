@@ -6,9 +6,15 @@ import tensorflow as tf
 import dfFunctions
 import tf_models
 
+class ClassName(object):
+    """docstring for ClassName"""
+    def __init__(self, arg):
+        super(ClassName, self).__init__()
+        self.arg = arg
+
+
 class SVDmodel(object):
-    """
-    Class to creat SVD models. This class does not deal with tensorflow. It
+    """ Class to creat SVD models. This class does not deal with tensorflow. It
     separate the dataframe in three parts: train, test and validation; with
     that it comunicates with the class tf_models.SVD to creat a training 
     session and to create a prediction. 
@@ -20,8 +26,7 @@ class SVDmodel(object):
     :type df: dataframe  
     :type users: string  
     :type items: string
-    :type ratings: string
-    """
+    :type ratings: string """
     def __init__(self,df,users, items, ratings):
         self.df = df
         self.users = users
@@ -33,13 +38,10 @@ class SVDmodel(object):
         self.train,self.test,self.valid = self.data_separation()
         
     def data_separation(self):
-    """
-    Fuction that randomizes the dataframe df and separate it
-    in tree parts: 80% in traing, 10% in test and 10% in validation.  
- 
-    :rtype: triple of dataframes
-    """
-
+        """ Fuction that randomizes the dataframe df and separate it
+        in tree parts: 80% in traing, 10% in test and 10% in validation.
+        
+        :rtype: triple of dataframes """
         rows = len(self.df)
         random_df = self.df.iloc[np.random.permutation(rows)].reset_index(drop=True)
         split_index = int(rows * 0.8)
