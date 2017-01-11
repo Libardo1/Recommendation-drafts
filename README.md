@@ -35,33 +35,31 @@ optional arguments:
 
 ```
 $
-./download_data.sh
+bash download_data.sh
 python3 recommender.py -s 20000
-  >> Preprocessing program ... Done in 0.025sec.
-  >> Relevant grounding ... Done in 0.050sec.
-  >> Compilation ... Done in 0.017sec.
 
->> Policy:
-Pi(running(c1,0)=0, running(c2,0)=0, running(c3,0)=0) = reboot(c1)
-Pi(running(c1,0)=0, running(c2,0)=0, running(c3,0)=1) = reboot(c1)
-Pi(running(c1,0)=0, running(c2,0)=1, running(c3,0)=0) = reboot(c1)
-Pi(running(c1,0)=0, running(c2,0)=1, running(c3,0)=1) = reboot(c1)
-Pi(running(c1,0)=1, running(c2,0)=0, running(c3,0)=0) = reboot(c2)
-Pi(running(c1,0)=1, running(c2,0)=0, running(c3,0)=1) = reboot(c2)
-Pi(running(c1,0)=1, running(c2,0)=1, running(c3,0)=0) = reboot(c3)
-Pi(running(c1,0)=1, running(c2,0)=1, running(c3,0)=1) = reboot(none)
-
->> Value:
-V(running(c1,0)=0, running(c2,0)=0, running(c3,0)=0) = 19.1341
-V(running(c1,0)=0, running(c2,0)=0, running(c3,0)=1) = 20.6162
-V(running(c1,0)=0, running(c2,0)=1, running(c3,0)=0) = 20.6162
-V(running(c1,0)=0, running(c2,0)=1, running(c3,0)=1) = 21.8910
-V(running(c1,0)=1, running(c2,0)=0, running(c3,0)=0) = 20.5864
-V(running(c1,0)=1, running(c2,0)=0, running(c3,0)=1) = 23.6645
-V(running(c1,0)=1, running(c2,0)=1, running(c3,0)=0) = 23.6645
-V(running(c1,0)=1, running(c2,0)=1, running(c3,0)=1) = 25.3019
-
->> Value iteration converged in 0.295sec after 45 iterations.
-@ Average time per iteration = 0.007sec.
-@ Max error = 0.02158
+>> step batch_error test_error elapsed_time
+  0 2.671705 2.537921* 0.343948(s)
+1000 1.188460 1.142280* 1.973038(s)
+2000 1.013221 1.061189* 1.945483(s)
+3000 0.965705 0.959811* 1.962791(s)
+4000 0.963447 0.957588* 1.954662(s)
+5000 0.896872 0.915500* 1.929358(s)
+6000 0.883620 0.906923* 1.968918(s)
+7000 0.887137 0.858354* 1.970129(s)
+8000 0.879952 0.923793 1.563606(s)
+9000 0.893490 0.909151 1.583156(s)
+10000 0.883148 0.906680 1.580827(s)
+11000 0.887621 0.921126 1.520585(s)
+12000 0.861341 0.924831 1.525608(s)
+13000 0.840560 0.893960 1.585923(s)
+14000 0.839716 0.877921 1.573293(s)
+15000 0.832154 0.917722 1.579683(s)
+16000 0.821299 0.925236 1.570992(s)
+17000 0.851868 0.867002 1.593472(s)
+18000 0.857696 0.868844 1.577381(s)
+19000 0.853078 0.841532* 1.917003(s)
+ 
+>> The duration of the whole training with 20000 steps is 34.79 seconds,which is equal to:  0:0:0:34 (DAYS:HOURS:MIN:SEC)
+>> The mean square error the whole valid dataset is  0.867328
 ```
