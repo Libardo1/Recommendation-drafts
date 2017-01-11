@@ -1,6 +1,6 @@
 # Factorization model for recommendation
 
-This project is my first attempt to create a recommendation system using tensorflow. My first idea was to contribute to https://github.com/songgc/TF-recomm . But since my code took its own direction I decided to create this repository instead. Nevertherless the core model implemented here is the same as the one from that repository. In the future I want to implement new models of recommendations and have a more robust test framework. This is a one week project, so if it seems sloppy, it's not an accident.
+This project is my first attempt to create a recommendation system using tensorflow. My first idea was to contribute to https://github.com/songgc/TF-recomm . But since my code took its own direction I decided to create this repository instead. Nevertherless the core model implemented here is the same as the one from that repository. In the future I want to implement new recommendation models and have a more robust test framework. This is a one week project, so if it seems sloppy, it's not an accident.
 
 
 ### Requirements
@@ -60,6 +60,7 @@ python3 recommender.py -s 20000
 18000 0.857696 0.868844 1.577381(s)
 19000 0.853078 0.841532* 1.917003(s)
  
->> The duration of the whole training with 20000 steps is 34.79 seconds,which is equal to:  0:0:0:34 (DAYS:HOURS:MIN:SEC)
+>> The duration of the whole training with 20000 steps is 34.79
+seconds,which is equal to: 0:0:0:34 (DAYS:HOURS:MIN:SEC)
 >> The mean square error the whole valid dataset is  0.867328
 ```

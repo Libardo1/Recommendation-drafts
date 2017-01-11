@@ -3,6 +3,7 @@
 import numpy as np
 import dfFunctions
 import tf_models
+from os import getcwd
 
 
 class SVDmodel(object):
@@ -93,7 +94,7 @@ class SVDmodel(object):
 
 if __name__ == '__main__':
     import argparse
-    path = "/var/tmp/Felsal_Projects/Recommender/movielens/ml-1m/ratings.dat"
+    path = getcwd() + '/movielens/ml-1m/ratings.dat'
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dimension",type=int, default=15, help="embedding vector size (default=15)")
@@ -101,9 +102,9 @@ if __name__ == '__main__':
     parser.add_argument("-l", "--learning", type=float,   default=0.001,   help="learning rate (default=0.001)")
     parser.add_argument("-b", "--batch",type=int, default=1000, help="batch size (default=1000)")
     parser.add_argument("-s", "--steps",type=int, default=5000, help="number of training (default=5000)")
-    parser.add_argument("-p", "--path",type=str, default=path, help="ratings path (default=brucutuiv)")
+    parser.add_argument("-p", "--path",type=str, default=path, help="ratings path (default=pwd/movielens/ml-1m/ratings.dat)")
     args = parser.parse_args()
-    
+
     df = dfFunctions.get_data(args.path, sep="::")
     model = SVDmodel(df,'user', 'item','rate')
 
