@@ -1,6 +1,6 @@
 # Factorization model for recommendation
 
-This project is my first attempt to create a recommendation system using tensorflow. My first idea was to contribute to https://github.com/songgc/TF-recomm . But since my code took its own direction I decided to create this repository instead. Nevertherless the core model implemented here is the same as the one from that repository. In the future I want to implement new models of recommendations and have a more robust test framework; This is a one week project, so if it seems sloppy, it's not an accident.
+This project is my first attempt to create a recommendation system using tensorflow. My first idea was to contribute to https://github.com/songgc/TF-recomm . But since my code took its own direction I decided to create this repository instead. Nevertherless the core model implemented here is the same as the one from that repository. In the future I want to implement new models of recommendations and have a more robust test framework. This is a one week project, so if it seems sloppy, it's not an accident.
 
 
 ### Requirements
@@ -12,29 +12,31 @@ This project is my first attempt to create a recommendation system using tensorf
 
 ```
 $ 
-./download_data.sh
-./svd_train_val.py --help
-usage: mdp-problog.py [-h] [-g GAMMA] [-e EPS] [-v VERBOSE] domain instance
-
-positional arguments:
-  domain                path to MDP domain file
-  instance              path to MDP instance file
+python3 recommender.py --help
 
 optional arguments:
   -h, --help            show this help message and exit
-  -g GAMMA, --gamma GAMMA
-                        discount factor (default=0.9)
-  -e EPS, --eps EPS     relative error  (default=0.1)
-  -v VERBOSE, --verbose VERBOSE
-                        verbose mode (default=0)
+  -d DIMENSION, --dimension DIMENSION
+                        embedding vector size (default=15)
+  -r REG, --reg REG     regularizer constant for the loss function
+                        (default=0.05)
+  -l LEARNING, --learning LEARNING
+                        learning rate (default=0.001)
+  -b BATCH, --batch BATCH
+                        batch size (default=1000)
+  -s STEPS, --steps STEPS
+                        number of training (default=5000)
+  -p PATH, --path PATH  ratings path (default=brucutuiv)
+
 ```
 
 
 ## Example
 
 ```
-$ ./mdp-problog.py models/sysadmin/domain.pl models/sysadmin/star2.pl --eps 0.1 --gamma 0.9
-
+$
+./download_data.sh
+python3 recommender.py -s 20000
   >> Preprocessing program ... Done in 0.025sec.
   >> Relevant grounding ... Done in 0.050sec.
   >> Compilation ... Done in 0.017sec.
