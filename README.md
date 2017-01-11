@@ -26,7 +26,7 @@ optional arguments:
                         batch size (default=1000)
   -s STEPS, --steps STEPS
                         number of training (default=5000)
-  -p PATH, --path PATH  ratings path (default=brucutuiv)
+  -p PATH, --path PATH  ratings path (default=pwd/movielens/ml-1m/ratings.dat)
 
 ```
 

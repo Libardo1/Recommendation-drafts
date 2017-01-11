@@ -4,6 +4,7 @@ import unittest
 import dfFunctions
 import tf_models
 import recommender as re
+from os import getcwd
 
 class TestRecomendation(unittest.TestCase):
     """
@@ -12,7 +13,7 @@ class TestRecomendation(unittest.TestCase):
     from the valid dataset is less than 1
     """
     def test_upperbound(self):
-        path = "/var/tmp/Felsal_Projects/Recommender/movielens/ml-1m/ratings.dat"
+        path = getcwd() + '/movielens/ml-1m/ratings.dat'
         df = dfFunctions.get_data(path, sep="::")
         model = re.SVDmodel(df,'user', 'item','rate')
 
