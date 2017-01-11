@@ -30,7 +30,10 @@ class TestRecomendation(unittest.TestCase):
 
 def run_test():
     """ 
-    Running all the tests
+    Running all the tests. This code should have a more 
+    robust test framework. I wrote this code in a hurry
+    just to see if I could creat some recommendation 
+    system using tensorflow (11/01/17).
     """
     print("Running all tests...")
     suite = unittest.TestSuite()

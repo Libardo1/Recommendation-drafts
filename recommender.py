@@ -1,11 +1,6 @@
+import numpy as np
 import dfFunctions
 import tf_models
-
-class ClassName(object):
-    """docstring for ClassName"""
-    def __init__(self, arg):
-        super(ClassName, self).__init__()
-        self.arg = arg
 
 
 class SVDmodel(object):
@@ -64,16 +59,18 @@ class SVDmodel(object):
 
 if __name__ == '__main__':
     import argparse
+    path = "/var/tmp/Felsal_Projects/Recommender/movielens/ml-1m/ratings.dat"
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dimension",type=int, default=15, help="embedding vector size (default=15)")
     parser.add_argument("-r", "--reg",     type=float, default=0.05, help="regularizer constant for the loss function  (default=0.05)")
     parser.add_argument("-l", "--learning", type=float,   default=0.001,   help="learning rate (default=0.001)")
     parser.add_argument("-b", "--batch",type=int, default=1000, help="batch size (default=1000)")
     parser.add_argument("-s", "--steps",type=int, default=5000, help="number of training (default=5000)")
+    parser.add_argument("-p", "--path",type=str, default=path, help="ratings path (default=brucutu)")
     args = parser.parse_args()
 
 
-    path = "/var/tmp/Felsal_Projects/Recommender/movielens/ml-1m/ratings.dat"
     df = dfFunctions.get_data(path, sep="::")
     model = SVDmodel(df,'user', 'item','rate')
 

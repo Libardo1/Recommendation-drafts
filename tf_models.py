@@ -50,6 +50,17 @@ def inference_svd(user_batch, item_batch, user_num, item_num, dim=5):
 
 
 def loss_function(infer, regularizer, rate_batch,reg):
+    """
+    Given one tensor with all the predictions from the batch (infer) 
+    and one tensor with all the real scores from the batch (rate_batch) 
+    we calculate, using numpy sintax, the cost_l2 = np.sum((infer - rate_batch)**2)*0.5
+    After that this function return cost_l2 + regularizer*reg 
+    
+    :type infer: tensor of float32     
+    :type regularizer: tensor, shape=[],dtype=float32
+    :type rate_batch: tensor of int32    
+    :type reg: float
+    """
     cost_l2 = tf.nn.l2_loss(tf.sub(infer, rate_batch))
     penalty = tf.constant(reg, dtype=tf.float32, shape=[], name="l2")
     cost = tf.add(cost_l2, tf.mul(regularizer, penalty))
@@ -57,7 +68,18 @@ def loss_function(infer, regularizer, rate_batch,reg):
 
 
 class SVD(object):
+    """
+    Class specialized in communicating with tensorflow. It receives all
+    data information from the class recommender.SVDmodel and sets the
+    tensorflow graph, it also run the graph in a Session for training
+    and for prediction.
 
+    :type num_of_users: int  
+    :type num_of_items: int
+    :type train_batch_generator: dfFunctions.BatchGenerator
+    :type test_batch_generator: dfFunctions.BatchGenerator
+    :type valid_batch_generator: dfFunctions.BatchGenerator
+    """
     def __init__(self,num_of_users,num_of_items,train_batch_generator,test_batch_generator,valid_batch_generator):
         self.num_of_users = num_of_users
         self.num_of_items = num_of_items
@@ -71,10 +93,19 @@ class SVD(object):
         self.best_acc_test = float('inf')
 
 
-    def get_graph(self,hp_dim,hp_reg,learning_rate):
+    def set_graph(self,hp_dim,hp_reg,learning_rate):
+        """
+        This function only sets the tensorflow graph and stores it
+        as self.graph. Here we do not keep the log to pass it to
+        Tensorboard. We save the params hp_dim, hp_reg and learning_rate
+        as self.dimension, self.regularizer, self.learning_rate,
+        respectively, in order to get the same graph while doing the
+        prediction.  
 
-        "Defining Tensorflow Graph"
-        
+        :type hp_dim: int
+        :type hp_reg: float
+        :type learning_rate: float
+        """
         self.dimension = hp_dim
         self.regularizer = hp_reg
         self.learning_rate = learning_rate
@@ -108,13 +139,25 @@ class SVD(object):
                 os.makedirs(save_dir)
             self.save_path = os.path.join(save_dir, 'best_validation')
 
-            #Minibatch accuracy
+            #Batch accuracy
             with tf.name_scope('accuracy'):
                 self.acc_op =  tf.sqrt(tf.reduce_mean(tf.pow(tf.sub(self.infer,self.tf_rate_batch),2)))
 
     
-    def training(self,hp_dim,hp_reg,learning_rate,batch_size,num_steps):
-        self.get_graph(hp_dim,hp_reg,learning_rate)
+    def training(self,hp_dim,hp_reg,learning_rate,num_steps):
+        """
+        After created the graph this function run it in a Session for
+        training. We print some information just to keep track of the
+        training. Every time the accuracy of the test batch is decrease
+        we save the variables of the model (we use * to mark a new save)
+
+
+        :type hp_dim: int
+        :type hp_reg: float
+        :type learning_rate: float
+        :type num_steps: int
+        """
+        self.set_graph(hp_dim,hp_reg,learning_rate)
         self.num_steps = num_steps
         marker = ''
 
@@ -145,6 +188,11 @@ class SVD(object):
         self.general_duration = time.time() - initial_time
 
     def print_stats(self):
+        """
+        This function prints the duration of the whole trianing.
+        It can be called before the training, but it will only print
+        that the training lasted 0 seconds.
+        """
         sec = timedelta(seconds=int(self.general_duration))
         d_time = datetime(1,1,1) + sec
         print(' ')
@@ -154,17 +202,31 @@ class SVD(object):
         print(" (DAYS:HOURS:MIN:SEC)")
 
     def prediction(self,list_of_users=None,list_of_items=None,show_valid=False):
+        """
+        Prediction function. This function loads the tensorflow graph
+        with the same params from the training and with the saved
+        variables. The user car either check what is the mean square error
+        of the whole valid dataset (if show_valid == True),  or the user
+        can use two np.arrays of the same size (one is a list of users
+        and the other is a list of items) and this function will return
+        what is the predicted score (as a np array of floats).
+
+        :type list_of_users: numpy array of ints
+        :type list_of_items: numpy array of ints
+        :type show_valid: boolean
+        :rtype valid_error: float
+        :rtype predicion: numpy array of floats
+        """
         if self.dimension == None and self.regularizer == None:
             print("You can not have a prediction without training!!!!")
         else:
-            self.get_graph(self.dimension,self.regularizer,self.learning_rate)
+            self.set_graph(self.dimension,self.regularizer,self.learning_rate)
             with tf.Session(graph=self.graph) as sess:
                 self.saver.restore(sess=sess, save_path=self.save_path)
                 users, items, rates = self.valid_batch_generator.get_batch()
                 if show_valid:
                     feed_dict = {self.tf_user_batch: users, self.tf_item_batch: items, self.tf_rate_batch: rates}
                     valid_error = sess.run(self.acc_op, feed_dict=feed_dict)
-                    #print("Avarege error of the whole valid dataset: ", valid_error)
                     return valid_error         
                 else:
                     feed_dict = {self.tf_user_batch: list_of_users, self.tf_item_batch: list_of_items, self.tf_rate_batch: rates}
