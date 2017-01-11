@@ -47,7 +47,7 @@ class SVDmodel(object):
         self.test_batches = dfFunctions.BatchGenerator(self.test,batch_size,self.users,self.items,self.ratings)
         self.valid_batches = dfFunctions.BatchGenerator(self.valid,len(self.valid),self.users,self.items,self.ratings)
         self.tf_counterpart = tf_models.SVD(self.num_of_users,self.num_of_items,self.train_batches,self.test_batches,self.valid_batches)
-        self.tf_counterpart.training(hp_dim,hp_reg,learning_rate,batch_size,num_steps)
+        self.tf_counterpart.training(hp_dim,hp_reg,learning_rate,num_steps)
         self.tf_counterpart.print_stats()
 
     def valid_prediction(self):
