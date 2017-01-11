@@ -1,5 +1,4 @@
 import tensorflow as tf
-#import numpy as np
 from utils import accuracy
 import os
 import time
@@ -18,7 +17,14 @@ def inference_svd(user_batch, item_batch, user_num, item_num, dim=5):
 
     We calculate also a regularizer to use in the loss function. This function
     returns a dictionary with the tensors infer, regularizer, w_user (tensor with
-    all the user vectors) and w_items (tensor with all the item vectors)   
+    all the user vectors) and w_items (tensor with all the item vectors).
+    
+    :type item_batch: tensor of int32     
+    :type user_batch: tensor of int32    
+    :type user_num: int
+    :type item_num: int
+    :type dim: int
+    :rtype: dictionary   
 
     """
     with tf.name_scope('Declaring_variables'):
