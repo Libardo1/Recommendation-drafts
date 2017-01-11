@@ -205,7 +205,7 @@ class SVD(object):
         """
         Prediction function. This function loads the tensorflow graph
         with the same params from the training and with the saved
-        variables. The user car either check what is the mean square error
+        variables. The user can either check what is the mean square error
         of the whole valid dataset (if show_valid == True),  or the user
         can use two np.arrays of the same size (one is a list of users
         and the other is a list of items) and this function will return

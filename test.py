@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import unittest
 import dfFunctions
 import tf_models
@@ -6,7 +8,7 @@ import recommender as re
 class TestRecomendation(unittest.TestCase):
     """
     A very basic test to check if the otimization is working.
-    We run 5000 steps of training and check if the  mean square error
+    We run 5000 steps of training and check if the mean square error
     from the valid dataset is less than 1
     """
     def test_upperbound(self):
