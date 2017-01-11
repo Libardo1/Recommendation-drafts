@@ -103,9 +103,8 @@ if __name__ == '__main__':
     parser.add_argument("-s", "--steps",type=int, default=5000, help="number of training (default=5000)")
     parser.add_argument("-p", "--path",type=str, default=path, help="ratings path (default=brucutuiv)")
     args = parser.parse_args()
-
-
-    df = dfFunctions.get_data(path, sep="::")
+    
+    df = dfFunctions.get_data(args.path, sep="::")
     model = SVDmodel(df,'user', 'item','rate')
 
     dimension = args.dimension
